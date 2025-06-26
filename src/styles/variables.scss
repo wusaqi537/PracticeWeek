@@ -1,0 +1,16 @@
+// 颜色变量
+$primary-color: #409EFF;
+$text-color: #333333;
+$bg-color: #ffffff;
+
+// 布局变量
+$header-height: 144px;
+
+// 响应式断点
+$breakpoints: (
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px,
+  'xxl': 1400px
+); 

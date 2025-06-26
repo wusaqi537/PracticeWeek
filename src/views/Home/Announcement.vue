@@ -123,10 +123,21 @@
           display: block;
           width: 100%;
           height: 100%;
-          background: url(@/assets/img/home-gg-more-icon.png) no-repeat center center;
+          position: relative;
+          color: #fff;
+          text-decoration: none;
+          
+          &::after {
+            content: "更多";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+          }
 
           &:hover {
-            background: url(@/assets/img/home-gg-more-icon-hover.png) no-repeat center center;
+            background: rgba(255,255,255,0.1);
           }
         }
       }

@@ -11,8 +11,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 const props = defineProps<{
   modelPath: string
@@ -106,33 +106,34 @@ const loadModel = () => {
 
   loader.load(
     props.modelPath,
-    (gltf) => {
+    (gltf: GLTF) => {
       model = gltf.scene
-      scene.add(model)
+      if (model) {
+        scene.add(model)
 
-      // 自动调整相机位置以适应模型大小
-      const box = new THREE.Box3().setFromObject(model)
-      const size = box.getSize(new THREE.Vector3())
-      const center = box.getCenter(new THREE.Vector3())
+        // 自动调整相机位置以适应模型大小
+        const box = new THREE.Box3().setFromObject(model)
+        const size = box.getSize(new THREE.Vector3())
+        const center = box.getCenter(new THREE.Vector3())
 
-      const maxDim = Math.max(size.x, size.y, size.z)
-      const fov = camera.fov * (Math.PI / 180)
-      let cameraZ = Math.abs(maxDim / Math.tan(fov / 2))
+        const maxDim = Math.max(size.x, size.y, size.z)
+        const fov = camera.fov * (Math.PI / 180)
+        let cameraZ = Math.abs(maxDim / Math.tan(fov / 2))
 
-      camera.position.z = cameraZ * 1.5
-      camera.updateProjectionMatrix()
+        camera.position.z = cameraZ * 1.5
+        camera.updateProjectionMatrix()
 
-      // 将模型居中
-      model.position.x = -center.x
-      model.position.y = -center.y
-      model.position.z = -center.z
-
+        // 将模型居中
+        model.position.x = -center.x
+        model.position.y = -center.y
+        model.position.z = -center.z
+      }
       loading.value = false
     },
-    (progress) => {
+    (progress: { loaded: number; total: number }) => {
       console.log('Loading progress:', (progress.loaded / progress.total) * 100 + '%')
     },
-    (error) => {
+    (error: unknown) => {
       console.error('Error loading model:', error)
       loading.value = false
     }

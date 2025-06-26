@@ -72,7 +72,20 @@ const creativeItems = [
   bottom: 31px;
   width: 58px;
   height: 22px;
-  background: url('@/assets/img/home-dmgb.png') no-repeat center;
+  text-decoration: none;
+  color: #979797;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.creative-header .more::after {
+  content: "更多";
+}
+
+.creative-header .more:hover {
+  color: #721b28;
 }
 
 .creative-body {

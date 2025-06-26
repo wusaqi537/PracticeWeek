@@ -72,13 +72,21 @@ import img3 from '@/assets/img/zl2019_chuangkou3.png'
       bottom: 31px;
       height: 28px;
       z-index: 100;
-      background: url('@/assets/img/home-gbxw-more-bg.png') no-repeat center bottom;
       padding-bottom: 3px;
       font-size: 16px;
       padding-left: 5px;
       float: right;
       text-align: right;
       color: #979797;
+      text-decoration: none;
+      
+      &::after {
+        content: "更多";
+      }
+
+      &:hover {
+        color: #721b28;
+      }
     }
 
     .announcement {

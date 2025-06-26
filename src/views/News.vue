@@ -16,7 +16,7 @@
       <div v-else class="news-list">
         <div class="list-header">
           <div class="header-left">
-            <h1>资讯</h1>
+          <h1>资讯</h1>
             <span v-if="searchKeyword" class="search-result">
               搜索结果: {{ totalItems }} 条
             </span>
@@ -482,10 +482,10 @@ onMounted(() => {
         align-items: center;
         gap: 15px;
 
-        h1 {
-          font-size: 24px;
-          color: #333;
-          margin: 0;
+      h1 {
+        font-size: 24px;
+        color: #333;
+        margin: 0;
         }
 
         .search-result {

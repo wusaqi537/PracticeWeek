@@ -203,7 +203,20 @@ const categories = [
           bottom: 5px;
           width: 58px;
           height: 28px;
-          background: url('@/assets/img/home-dmgb.png') no-repeat center;
+          text-decoration: none;
+          color: #8d343c;
+          font-size: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          &::after {
+            content: "更多";
+          }
+
+          &:hover {
+            color: #721b28;
+          }
         }
       }
     }

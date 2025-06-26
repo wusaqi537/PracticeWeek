@@ -42,7 +42,7 @@ interface NewsItem {
 }
 
 const router = useRouter()
-const newsList = ref<NewsItem[]>([])
+    const newsList = ref<NewsItem[]>([])
 const searchKeyword = ref('')
 const isSearchVisible = ref(false)
 
@@ -57,15 +57,15 @@ const filteredNewsList = computed(() => {
   )
 })
 
-const getNewsList = () => {
-  newsList.value = [
-    {
-      date: '2024-03-02',
-      title: '新闻标题2',
-      content: '新闻内容2'
+    const getNewsList = () => {
+        newsList.value = [
+            {
+                date: '2024-03-02',
+                title: '新闻标题2',
+                content: '新闻内容2'
+            }
+        ]   
     }
-  ]
-}
 
 const showSearch = () => {
   isSearchVisible.value = !isSearchVisible.value
@@ -76,14 +76,14 @@ const handleSearch = () => {
   isSearchVisible.value = false
 }
 
-const handleDetail = (newsItem: NewsItem) => {
-  router.push({
-    path: '/news/detail',
-    query: {
-      newsItem: JSON.stringify(newsItem)
+    const handleDetail = (newsItem: NewsItem) => {
+        router.push({
+            path: '/news/detail',
+            query: {
+                newsItem: JSON.stringify(newsItem)
+            }
+        })
     }
-  })
-}
 
 onMounted(() => {
   getNewsList()

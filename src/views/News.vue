@@ -15,7 +15,29 @@
       <!-- 新闻列表 -->
       <div v-else class="news-list">
         <div class="list-header">
-          <h1>资讯</h1>
+          <div class="header-left">
+            <h1>资讯</h1>
+            <span v-if="searchKeyword" class="search-result">
+              搜索结果: {{ totalItems }} 条
+            </span>
+          </div>
+          <div class="search-wrapper">
+            <div class="search-trigger" @click="showSearch">
+              <img class="search-icon" :src="searchIcon" alt="搜索" />
+              <span class="search-text">搜索</span>
+            </div>
+            <div class="search-panel" v-if="isSearchVisible" @click.stop>
+              <div class="search-box">
+                <input 
+                  type="text" 
+                  v-model="searchKeyword"
+                  @keyup.enter="handleSearch"
+                  placeholder="请输入关键词"
+                />
+                <button @click="handleSearch">搜索</button>
+              </div>
+            </div>
+          </div>
         </div>
         <ul class="list-content">
           <li v-for="news in displayedNews" 
@@ -66,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
@@ -75,20 +97,38 @@ const loading = ref(false)
 const newsList = ref<any[]>([])
 const error = ref('')
 
+// 搜索相关
+const searchKeyword = ref('')
+const isSearchVisible = ref(false)
+const searchIcon = new URL('@/assets/img/header-search-icon.png', import.meta.url).href
+
 // 分页相关
 const currentPage = ref(1)
 const pageSize = ref(10)
 const jumpPage = ref(1)
 
-// 计算总页数和总条数
-const totalItems = computed(() => newsList.value.length)
+// 过滤后的新闻列表
+const filteredNewsList = computed(() => {
+  if (!searchKeyword.value.trim()) {
+    return newsList.value
+  }
+  const keyword = searchKeyword.value.toLowerCase().trim()
+  return newsList.value.filter(news => 
+    news.title.toLowerCase().includes(keyword) ||
+    news.content.toLowerCase().includes(keyword) ||
+    news.description.toLowerCase().includes(keyword)
+  )
+})
+
+// 计算总条数和总页数
+const totalItems = computed(() => filteredNewsList.value.length)
 const totalPages = computed(() => Math.ceil(totalItems.value / pageSize.value))
 
 // 计算当前页显示的新闻
 const displayedNews = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
   const end = start + pageSize.value
-  return newsList.value.slice(start, end)
+  return filteredNewsList.value.slice(start, end)
 })
 
 // 计算显示的页码范围
@@ -165,6 +205,36 @@ const handleJump = () => {
   } else {
     jumpPage.value = currentPage.value
   }
+}
+
+// 显示/隐藏搜索面板
+const showSearch = () => {
+  isSearchVisible.value = !isSearchVisible.value
+  if (isSearchVisible.value) {
+    // 添加点击外部关闭事件
+    setTimeout(() => {
+      document.addEventListener('click', closeSearchPanel)
+    }, 0)
+  }
+}
+
+const closeSearchPanel = (event: MouseEvent) => {
+  const searchWrapper = document.querySelector('.search-wrapper')
+  if (searchWrapper && !searchWrapper.contains(event.target as Node)) {
+    isSearchVisible.value = false
+    document.removeEventListener('click', closeSearchPanel)
+  }
+}
+
+// 组件卸载时清理事件监听
+onUnmounted(() => {
+  document.removeEventListener('click', closeSearchPanel)
+})
+
+// 处理搜索
+const handleSearch = () => {
+  currentPage.value = 1 // 重置到第一页
+  isSearchVisible.value = false
 }
 
 // 聚合数据 API 配置
@@ -403,11 +473,25 @@ onMounted(() => {
     .list-header {
       padding: 20px;
       border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-      h1 {
-        font-size: 24px;
-        color: #333;
-        margin: 0;
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        h1 {
+          font-size: 24px;
+          color: #333;
+          margin: 0;
+        }
+
+        .search-result {
+          color: #666;
+          font-size: 14px;
+        }
       }
     }
 
@@ -540,6 +624,71 @@ onMounted(() => {
       .total-info {
         margin-left: 16px;
         color: #666;
+      }
+    }
+  }
+
+  .search-wrapper {
+    position: relative;
+
+    .search-trigger {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      .search-icon {
+        width: 20px;
+        height: 20px;
+        filter: brightness(0);
+        vertical-align: middle;
+      }
+
+      .search-text {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+
+    .search-panel {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      padding-top: 10px;
+      z-index: 1000;
+
+      .search-box {
+        padding: 15px;
+        border-radius: 4px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        border: 1px solid #eee;
+
+        input {
+          width: 200px;
+          padding: 8px 12px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          margin-right: 10px;
+
+          &:focus {
+            outline: none;
+            border-color: #8d343c;
+          }
+        }
+
+        button {
+          padding: 8px 16px;
+          background: #8d343c;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+
+          &:hover {
+            background: #721b28;
+          }
+        }
       }
     }
   }

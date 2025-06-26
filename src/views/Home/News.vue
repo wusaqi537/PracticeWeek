@@ -20,16 +20,16 @@
 
     <!-- 右侧图片部分 -->
     <div class="gbxw-banner" style="width: 355px; margin-top: 85px; position: absolute; right: 35px;">
-      <a v-for="(item, index) in carouselItems" 
-         :key="index"
-         :href="item.link"
+        <a v-for="(item, index) in carouselItems" 
+           :key="index"
+           :href="item.link"
          :style="{
            display: 'block',
            marginTop: index === 0 ? '0px' : '10px'
          }"
-         target="_blank">
+           target="_blank">
         <img :src="item.imgSrc" :alt="item.title" :style="{ width: '355px', height: index === 2 ? '130px' : 'auto' }">
-      </a>
+        </a>
     </div>
   </div>
 </template>
@@ -133,19 +133,19 @@ const carouselItems = ref([
   width: 944px;
   margin: 0 auto;
   position: relative;
-  
+
   .home-gbxw-lft {
     .home-gbxw-head {
       position: relative;
       border-bottom: 3px solid #8d343c;
-      
+
       .title {
         display: block;
         img {
           height: 28px;
         }
       }
-      
+
       .more {
         position: absolute;
         right: 0;
@@ -204,7 +204,7 @@ const carouselItems = ref([
 
   .gbxw-banner {
     img {
-      display: block;
+        display: block;
       max-width: 100%;
     }
   }

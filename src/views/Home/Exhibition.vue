@@ -1,79 +1,66 @@
 <template>
   <div class="exhibition-container">
     <div class="exhibition-content">
+      <!-- 标题部分 -->
       <div class="exhibition-header">
-        <span class="title">
-          <img :src="titleImage" alt="国博展览" />
-        </span>
-        <div class="exhibition-apply">
-          <a href="/zl/zlsq/201901/t20190102_37011.shtml" target="_blank">展览申请</a>
+        <div class="home-cgyy-head">
+          <span class="title">
+            <img :src="titleImage" alt="国博展览">
+          </span>
+          <div class="exhibition-apply">
+            <a href="/zl/zlsq/201901/t20190102_37011.shtml" target="_blank">展览申请</a>
+          </div>
+          <a target="_blank" class="more" href="/zl/zhanlanyugao/"></a>
         </div>
-        <a target="_blank" class="more" href="/zl/zhanlanyugao/"></a>
-      </div>
-      
-      <div class="exhibition-swiper">
-        <swiper
-          :modules="[SwiperAutoplay, SwiperPagination, SwiperNavigation]"
-          :slides-per-view="1"
-          :loop="true"
-          :autoplay="{
-            delay: 5000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true
-          }"
-          :pagination="{
-            clickable: true,
-            dynamicBullets: true
-          }"
-          :navigation="true"
-          @swiper="onSwiper"
-          @slideChange="onSlideChange"
-        >
-          <swiper-slide v-for="(slide, index) in slides" :key="index">
-            <div class="pic">
-              <img :src="slide.image" :alt="slide.title">
-              <a v-for="(link, idx) in slide.links" 
-                 :key="idx"
-                 :class="'syzllbt_tem0' + (idx + 1)"
-                 :href="link.url"
-                 target="_blank">
-              </a>
-            </div>
-          </swiper-slide>
-        </swiper>
       </div>
 
+      <!-- 主展览图片部分 -->
+      <div class="main-exhibition">
+        <div class="main-image">
+          <img :src="mainImage" alt="国博展览">
+          <div class="exhibition-links">
+            <a href="https://www.chnmuseum.cn/zl/lszl/dywhxl/202506/t20250609_271879.shtml" target="_blank" class="link-1"></a>
+            <a href="https://www.chnmuseum.cn/portals/0/web/zt/202411mddy/" target="_blank" class="link-2"></a>
+            <a href="https://www.chnmuseum.cn/zl/lszl/lswhxl/202504/t20250430_271579.shtml" target="_blank" class="link-3"></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 展览分类部分 -->
       <div class="exhibition-categories">
-        <dl class="exhibition-category" v-for="(category, index) in categories" :key="index">
-          <dt>
-            <div class="category-swiper">
-              <swiper
-                :modules="[SwiperAutoplay, SwiperPagination, SwiperNavigation]"
-                :slides-per-view="1"
-                :loop="true"
-                :autoplay="{
-                  delay: 4000,
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true
-                }"
-                :pagination="{
-                  clickable: true,
-                  dynamicBullets: true
-                }"
-                :navigation="true"
-              >
-                <swiper-slide v-for="(item, idx) in category.items" :key="idx">
-                  <a :href="item.link" target="_blank">
-                    <img :src="item.image" :alt="item.title">
-                  </a>
-                </swiper-slide>
-              </swiper>
-            </div>
-          </dt>
-          <dd>
+        <div v-for="(category, index) in categories" :key="index" class="category-item">
+          <swiper
+            :modules="[SwiperAutoplay, SwiperPagination, SwiperNavigation]"
+            :slides-per-view="1"
+            :loop="true"
+            :autoplay="{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true
+            }"
+            :pagination="{
+              clickable: true,
+              el: '.swiper-pagination',
+              type: 'bullets'
+            }"
+            :navigation="{
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+              hideOnClick: true
+            }"
+            :speed="800"
+            class="category-swiper"
+          >
+            <swiper-slide v-for="(item, idx) in category.items" :key="idx">
+              <a :href="item.link" target="_blank">
+                <img :src="item.image" :alt="item.title">
+              </a>
+            </swiper-slide>
+          </swiper>
+          <div class="category-title">
             <a :href="category.link" target="_blank">{{ category.title }}</a>
-          </dd>
-        </dl>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -83,28 +70,16 @@
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 import 'swiper/css'
-import 'swiper/css/pagination'
 import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import 'swiper/css/autoplay'
 
-// Swiper模块
 const SwiperAutoplay = Autoplay
 const SwiperPagination = Pagination
 const SwiperNavigation = Navigation
 
 const titleImage = new URL('@/assets/img/zl2019_sdabiaoti5.png', import.meta.url).href
-
-// 轮播图数据
-const slides = [
-  {
-    image: new URL('@/assets/img/exhibition/2025homezhanlan_hz06-1.jpg', import.meta.url).href,
-    title: '中国国家博物馆',
-    links: [
-      { url: 'https://www.chnmuseum.cn/zl/lszl/dywhxl/202506/t20250609_271879.shtml' },
-      { url: 'https://www.chnmuseum.cn/portals/0/web/zt/202411mddy/' },
-      { url: 'https://www.chnmuseum.cn/zl/lszl/lswhxl/202504/t20250430_271579.shtml' }
-    ]
-  }
-]
+const mainImage = new URL('@/assets/img/exhibition/2025homezhanlan_hz06-1.jpg', import.meta.url).href
 
 // 展览分类数据
 const categories = [
@@ -116,6 +91,16 @@ const categories = [
         title: '古代中国',
         link: 'http://www.chnmuseum.cn/portals/0/web/zt/gudai/default.html',
         image: new URL('@/assets/img/exhibition/W020190324793434153186.jpg', import.meta.url).href
+      },
+      {
+        title: '复兴之路',
+        link: '/zl/jbcl/fxzl/',
+        image: new URL('@/assets/img/exhibition/P020250609314173212224.jpg', import.meta.url).href
+      },
+      {
+        title: '中华文明展',
+        link: '/zl/jbcl/zhwmz/',
+        image: new URL('@/assets/img/exhibition/P020230718295777453037.jpg', import.meta.url).href
       }
     ]
   },
@@ -127,6 +112,16 @@ const categories = [
         title: '书画展览',
         link: '/zl/ztcl/202501/t20250107_270853.shtml',
         image: new URL('@/assets/img/exhibition/P020250107402529120883.jpg', import.meta.url).href
+      },
+      {
+        title: '红色经典文物展',
+        link: '/zl/ztcl/hswhzl/',
+        image: new URL('@/assets/img/exhibition/P020230529382557358162.jpg', import.meta.url).href
+      },
+      {
+        title: '馆藏精品展',
+        link: '/zl/ztcl/gcjpz/',
+        image: new URL('@/assets/img/exhibition/P020230818453966648181.jpg', import.meta.url).href
       }
     ]
   },
@@ -135,140 +130,116 @@ const categories = [
     link: '/zl/lszl/',
     items: [
       {
-        title: '临时展览',
+        title: '临时展览1',
         link: '/zl/lszl/dywhxl/202506/t20250609_271879.shtml',
         image: new URL('@/assets/img/exhibition/P020250609314173212224.jpg', import.meta.url).href
+      },
+      {
+        title: '临时展览2',
+        link: '/zl/lszl/202501/',
+        image: new URL('@/assets/img/exhibition/P020240108358607204827.jpg', import.meta.url).href
+      },
+      {
+        title: '临时展览3',
+        link: '/zl/lszl/202502/',
+        image: new URL('@/assets/img/exhibition/P020250107402529120883.jpg', import.meta.url).href
       }
     ]
   }
 ]
-
-const onSwiper = (swiper: any) => {
-  console.log(swiper)
-}
-
-const onSlideChange = () => {
-  console.log('slide change')
-}
 </script>
 
 <style lang="scss" scoped>
 .exhibition-container {
   background: #721b28;
   padding: 0;
-  margin: -1px 0 0;
+  margin: 0;
 
   .exhibition-content {
     width: 1200px;
     margin: 0 auto;
     background: #ffffff;
-    padding: 0 65px;
-    overflow: hidden;
 
     .exhibition-header {
-      position: relative;
+      background: #ffffff;
       text-align: center;
-      padding: 31px 0 15px;
+      padding: 0 65px;
+      margin-bottom: 20px;
 
-      .title {
-        display: inline-block;
-      }
+      .home-cgyy-head {
+        position: relative;
+        padding: 10px 0;
 
-      .exhibition-apply {
-        position: absolute;
-        top: 32px;
-        right: 70px;
-        border-radius: 5px;
-        background-color: #8d343c;
-        padding: 6px 12px;
-
-        a {
-          color: #fff;
-          font-size: 22px;
-          text-decoration: none;
-
-          &:hover {
-            opacity: 0.9;
+        .title {
+          display: inline-block;
+          
+          img {
+            height: 28px;
           }
         }
-      }
 
-      .more {
-        position: absolute;
-        right: 0;
-        bottom: 31px;
-        width: 58px;
-        height: 28px;
-        z-index: 100;
+        .exhibition-apply {
+          position: absolute;
+          top: 8px;
+          right: 70px;
+          border-radius: 5px;
+          background-color: #8d343c;
+          padding: 6px 12px;
+
+          a {
+            color: #fff;
+            font-size: 22px;
+            text-decoration: none;
+
+            &:hover {
+              opacity: 0.9;
+            }
+          }
+        }
+
+        .more {
+          position: absolute;
+          right: 0;
+          bottom: 5px;
+          width: 58px;
+          height: 28px;
+          background: url('@/assets/img/home-dmgb.png') no-repeat center;
+        }
       }
     }
 
-    .exhibition-swiper {
-      :deep(.swiper) {
-        width: 100%;
-        height: 603px;
-      }
+    .main-exhibition {
+      padding: 0;
+      margin-bottom: 70px;
 
-      :deep(.swiper-slide) {
-        .pic {
-          position: relative;
+      .main-image {
+        position: relative;
+        width: 1200px;
+        height: auto;
+
+        img {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        .exhibition-links {
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
-
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
 
           a {
             position: absolute;
             display: block;
-            width: 100%;
-            height: 33.33%;
-            left: 0;
-            z-index: 2;
+            width: 33.33%;
+            height: 100%;
+            cursor: pointer;
 
-            &.syzllbt_tem01 { top: 0; }
-            &.syzllbt_tem02 { top: 33.33%; }
-            &.syzllbt_tem03 { top: 66.66%; }
-          }
-        }
-      }
-
-      :deep(.swiper-button-next),
-      :deep(.swiper-button-prev) {
-        color: #fff;
-        transition: all 0.3s ease;
-        width: 40px;
-        height: 40px;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 50%;
-        
-        &::after {
-          font-size: 16px;
-        }
-
-        &:hover {
-          background: rgba(0, 0, 0, 0.8);
-        }
-      }
-
-      :deep(.swiper-pagination) {
-        bottom: 20px !important;
-        
-        .swiper-pagination-bullet {
-          width: 8px;
-          height: 8px;
-          background: rgba(255, 255, 255, 0.5);
-          opacity: 0.7;
-          margin: 0 6px !important;
-          transition: all 0.3s ease;
-
-          &-active {
-            opacity: 1;
-            background: #fff;
-            transform: scale(1.2);
+            &.link-1 { left: 0; }
+            &.link-2 { left: 33.33%; }
+            &.link-3 { left: 66.66%; }
           }
         }
       }
@@ -277,94 +248,79 @@ const onSlideChange = () => {
     .exhibition-categories {
       display: flex;
       justify-content: space-between;
-      padding: 20px 0 45px;
-      margin: 0 -10px;
+      padding: 0 65px 20px;
+      gap: 15px;
 
-      .exhibition-category {
+      .category-item {
         flex: 1;
-        margin: 0 10px;
+        text-align: center;
 
-        dt {
-          .category-swiper {
-            width: 340px;
-            height: 320px;
-            position: relative;
-            overflow: hidden;
+        .category-swiper {
+          width: 340px;
+          height: 320px;
 
-            :deep(.swiper) {
-              width: 100%;
-              height: 100%;
-            }
-
-            :deep(.swiper-slide) {
-              a {
-                display: block;
-                width: 100%;
-                height: 100%;
-
-                img {
-                  width: 100%;
-                  height: 100%;
-                  object-fit: cover;
-                }
-              }
-            }
-
-            :deep(.swiper-button-next),
-            :deep(.swiper-button-prev) {
-              color: #fff;
-              transition: all 0.3s ease;
-              width: 30px;
-              height: 30px;
-              background: rgba(0, 0, 0, 0.5);
-              border-radius: 50%;
-              
-              &::after {
-                font-size: 14px;
-              }
-
-              &:hover {
-                background: rgba(0, 0, 0, 0.8);
-              }
-            }
-
-            :deep(.swiper-pagination) {
-              bottom: 10px !important;
-              
-              .swiper-pagination-bullet {
-                width: 6px;
-                height: 6px;
-                background: rgba(255, 255, 255, 0.5);
-                opacity: 0.7;
-                margin: 0 4px !important;
-                transition: all 0.3s ease;
-
-                &-active {
-                  opacity: 1;
-                  background: #fff;
-                  transform: scale(1.2);
-                }
-              }
-            }
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
           }
         }
 
-        dd {
+        .category-title {
           text-align: center;
-          margin-top: 10px;
+          margin-top: 8px;
+          font-size: 18px;
+          font-weight: bold;
 
           a {
             color: #333;
-            font-size: 16px;
             text-decoration: none;
 
             &:hover {
-              color: #721b28;
+              color: #8d343c;
             }
           }
         }
       }
     }
   }
+}
+
+:deep(.swiper) {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+:deep(.swiper-pagination) {
+  bottom: 5px !important;
+}
+
+:deep(.swiper-button-next),
+:deep(.swiper-button-prev) {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.3);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  
+  &::after {
+    font-size: 16px;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+:deep(.swiper-pagination-bullet) {
+  background: #fff;
+  opacity: 0.5;
+  margin: 0 4px;
+}
+
+:deep(.swiper-pagination-bullet-active) {
+  background: #fff;
+  opacity: 1;
 }
 </style> 

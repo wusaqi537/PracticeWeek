@@ -45,7 +45,7 @@ const researchItems = [
 <style scoped>
 .research-container {
   background: #721b28;
-  padding: 0 0 40px;
+  padding: 0;
 }
 
 .research-content {

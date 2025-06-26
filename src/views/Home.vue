@@ -28,6 +28,9 @@
     <Preservation />
     <Research />
     <Exhibition />
+    <SocialCommunication />
+    <InternationalLiaison />
+    <CulturalCreative />
   </div>
 </template>
 
@@ -40,6 +43,9 @@ import Collection from '@/views/Home/Collection.vue'
 import Preservation from './Home/Preservation.vue'
 import Research from './Home/Research.vue'
 import Exhibition from './Home/Exhibition.vue'
+import SocialCommunication from './Home/SocialCommunication.vue'
+import InternationalLiaison from './Home/InternationalLiaison.vue'
+import CulturalCreative from './Home/CulturalCreative.vue'
 </script>
 
 <style lang="scss" scoped>

@@ -20,6 +20,14 @@
         </div>
       </div>
     </div>
+    <!-- 征集区域外层容器 -->
+    <div class="collection-wrapper">
+      <Collection />
+    </div>
+    <News />
+    <Preservation />
+    <Research />
+    <Exhibition />
   </div>
 </template>
 
@@ -28,6 +36,10 @@ import Banner from '@/views/Home/Banner.vue'
 import Announcement from '@/views/Home/Announcement.vue'
 import Navigation from '@/views/Home/Navigation.vue'
 import HomeNews from '@/views/Home/News.vue'
+import Collection from '@/views/Home/Collection.vue'
+import Preservation from './Home/Preservation.vue'
+import Research from './Home/Research.vue'
+import Exhibition from './Home/Exhibition.vue'
 </script>
 
 <style lang="scss" scoped>
@@ -38,7 +50,6 @@ import HomeNews from '@/views/Home/News.vue'
   .main-content {
     width: 100%;
     background-color: #721b28;
-    min-height: calc(100vh - 500px);
 
     .announcement-wrapper {
       width: 1200px;
@@ -76,6 +87,12 @@ import HomeNews from '@/views/Home/News.vue'
         }
       }
     }
+  }
+
+  .collection-wrapper {
+    width: 100%;
+    background-color: #721b28;
+    padding-bottom: 20px;
   }
 }
 </style>

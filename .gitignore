@@ -24,4 +24,5 @@ dist-ssr
 *.sw?
 中国国家博物馆官方网站.html
 中国国家博物馆官方网站_files
-
+*.glb
+*.gltf

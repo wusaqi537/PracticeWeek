@@ -1,51 +1,88 @@
+<!-- 示例：src/views/Exhibition3D.vue -->
 <template>
   <div class="exhibition-page">
     <div class="exhibition-content">
+      <!-- 轮播图部分 -->
       <swiper :style="{
         '--swiper-navigation-color': '#fff',
         '--swiper-pagination-color': '#fff',
       }" :loop="true" :spaceBetween="10" :navigation="true" :modules="[FreeMode, Navigation, Thumbs]" class="mySwiper2"
-        @slideChange="onSlideChange" ref="mainSwiperRef">
-        <swiper-slide v-for="item in wwData" class="img">
+        @slideChange="onSlideChange">
+        <swiper-slide v-for="(item, index) in wwData" :key="index" class="img" @click="handleDetail(item)">
           <img :src="item.img" />
           <!-- 收藏按钮 -->
-          <button class="favorite-btn">
-            <span v-if="true">★</span>
+          <button class="favorite-btn" @click.stop="togglefavorite(item)">
+            <span v-if="isFav(item)">★</span>
             <span v-else>☆</span>
           </button>
         </swiper-slide>
       </swiper>
-      <!-- 你可以在这里添加 3D 模型展示的组件或代码 -->
+
+      <!-- 展品介绍部分 -->
+      <div class="exhibit-info">
+        <h2 class="title">{{ wwData[currentIndex].title }}</h2>
+        <div class="detail">{{ wwData[currentIndex].detail }}</div>
+      </div>
+    </div>
+  </div>
+  <!-- 全屏弹窗 -->
+  <div v-if="showDialog" class="dialog-mask" @click.self="showDialog = false">
+    <div class="dialog-content">
+      <div class="dialog-close" @click="showDialog = false">×</div>
+      <h2 class="dialog-title">{{ dialogItem?.title }}</h2>
+      <div class="model-container">
+        <ModelViewer v-if="dialogItem" :modelPath="dialogItem.model" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-interface Item {
-  title: string;
-  img: string;
-  detail: string;
-}
 import { ref, computed } from 'vue';
-// Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from 'swiper/vue';
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
-
-// import required modules
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
-import wwData from '@/data/ww.ts';
+import wwData from '@/data/ww';
+import ModelViewer from '@/components/ModelViewer.vue';
 
+interface ExhibitionItem {
+  title: string;
+  img: string;
+  model: string;
+  detail: string;
+}
+
+const showDialog = ref(false);
+const dialogItem = ref<ExhibitionItem | null>(null);
 const currentIndex = ref(0);
 
-// Swiper切换时更新索引
-const onSlideChange = (params: any) => {
-  currentIndex.value = params.realIndex
+const handleDetail = (item: ExhibitionItem) => {
+  dialogItem.value = item;
+  showDialog.value = true;
 };
 
+const fav = ref<string[]>(JSON.parse(localStorage.getItem('fav') || '[]'));
+
+const isFav = (item: ExhibitionItem) => {
+  return fav.value.includes(item.title);
+};
+
+const togglefavorite = (item: ExhibitionItem) => {
+  const idx = fav.value.indexOf(item.title);
+  if (idx > -1) {
+    fav.value.splice(idx, 1);
+  } else {
+    fav.value.push(item.title);
+  }
+  localStorage.setItem('fav', JSON.stringify(fav.value));
+};
+
+const onSlideChange = (swiper: any) => {
+  currentIndex.value = swiper.realIndex;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -94,43 +131,118 @@ const onSlideChange = (params: any) => {
       text-align: center;
       font-size: 18px;
       background: #444;
-
-      /* Center slide text vertically */
       display: flex;
       justify-content: center;
       align-items: center;
-    }
 
-    .swiper-slide img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    body {
-      background: #000;
-      color: #000;
-    }
-
-    .swiper {
-      width: 100%;
-      height: 300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .swiper-slide {
-      background-size: cover;
-      background-position: center;
+      img {
+        display: block;
+        width: auto;
+        height: 100%;
+        max-height: 500px;
+        object-fit: contain;
+      }
     }
 
     .mySwiper2 {
-      height: 800px;
+      height: 500px;
       width: 100%;
 
       .img {
         cursor: pointer;
+      }
+    }
+
+    .exhibit-info {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f8f8f8;
+      border-radius: 8px;
+
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #8d7357;
+        margin-bottom: 16px;
+        text-align: center;
+      }
+
+      .detail {
+        font-size: 16px;
+        line-height: 1.8;
+        color: #666;
+        text-align: justify;
+        white-space: pre-wrap;
+        
+        p {
+          margin-bottom: 16px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+.dialog-mask {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  .dialog-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    width: 90%;
+    max-width: 1000px;
+    height: 90vh;
+    position: relative;
+    overflow: hidden;
+
+    .dialog-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #333;
+      padding-right: 40px;
+    }
+
+    .model-container {
+      width: 100%;
+      height: calc(100% - 60px);
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .dialog-close {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      font-size: 28px;
+      color: #888;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 10;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #333;
       }
     }
   }
